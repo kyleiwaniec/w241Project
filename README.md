@@ -27,6 +27,6 @@ Ads/Locations:
 https://docs.google.com/document/d/1J5bG7Zzhm6BC2cziqpJ465ZBnSq6QVQvAAgBUP0HHi0/edit#
 
 Paired design:   
-http://www.jakebowers.org/PAPERS/BowPan-Fisher.pdf
+http://www.jakebowers.org/PAPERS/BowPan-Fisher.pdf (p26 contains R code)
 http://www.jakebowers.org/PAPERS/PanagopoulosBowers2012.pdf
 
