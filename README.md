@@ -22,3 +22,6 @@ https://docs.google.com/spreadsheets/d/1uavU79KL0CRSXPrNG6BksszsOwiK2Y74zWGkPYxQ
 
 iPad photos:
 https://photos.google.com/share/AF1QipP9_AJbtDvRRxYUb93cc8izb7AeC-Dih4QhbXx1LkicQ4f624TnyrbI37T3TF4cYA?key=dnlhWGloOXh5bkhCTkhRRms3RTNiYWp2WmNqdEFR
+
+Ads/Locations:   
+http://www.jakebowers.org/PAPERS/PanagopoulosBowers2012.pdf
