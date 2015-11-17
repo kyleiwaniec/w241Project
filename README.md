@@ -24,4 +24,9 @@ iPad photos:
 https://photos.google.com/share/AF1QipP9_AJbtDvRRxYUb93cc8izb7AeC-Dih4QhbXx1LkicQ4f624TnyrbI37T3TF4cYA?key=dnlhWGloOXh5bkhCTkhRRms3RTNiYWp2WmNqdEFR
 
 Ads/Locations:   
+https://docs.google.com/document/d/1J5bG7Zzhm6BC2cziqpJ465ZBnSq6QVQvAAgBUP0HHi0/edit#
+
+Paired design:   
+http://www.jakebowers.org/PAPERS/BowPan-Fisher.pdf
 http://www.jakebowers.org/PAPERS/PanagopoulosBowers2012.pdf
+
