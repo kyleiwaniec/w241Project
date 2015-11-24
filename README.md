@@ -30,3 +30,5 @@ Paired design:
 http://www.jakebowers.org/PAPERS/BowPan-Fisher.pdf (p26 contains R code)
 http://www.jakebowers.org/PAPERS/PanagopoulosBowers2012.pdf
 
+Posting Handbook:   
+https://docs.google.com/document/d/1uxaE5uAnnThMwScQGLpe27IZG-qTc4XxhheJJG6kIgA/edit
