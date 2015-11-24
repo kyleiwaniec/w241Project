@@ -15,7 +15,7 @@ https://public.tableau.com/profile/publish/map_106/Dashboard1#!/publish-confirm
 https://docs.google.com/spreadsheets/d/1Cm14MDu5p4LIa9Me7AvigdjmLFXmoDd_kjAt4eHIsA8/edit#gid=0
 
 All craigslist locations (using this as a scratchpad, so it's a little messy right now)
-https://docs.google.com/spreadsheets/d/1sm80nzYKKdVQgPSX5PvwCM2HYVOJKis19Hx33IxYNTk/edit?userstoinvite=mahadevanrajagopalan@gmail.com&ts=563a34f3&actionButton=1#gid=0
+https://docs.google.com/spreadsheets/d/1sm80nzYKKdVQgPSX5PvwCM2HYVOJKis19Hx33IxYNTk/edit#gid=0&vpid=A1
 
 w241 Project Data:
 https://docs.google.com/spreadsheets/d/1uavU79KL0CRSXPrNG6BksszsOwiK2Y74zWGkPYxQwkc/edit#gid=0
