@@ -17,6 +17,9 @@ https://docs.google.com/spreadsheets/d/1Cm14MDu5p4LIa9Me7AvigdjmLFXmoDd_kjAt4eHI
 All craigslist locations (using this as a scratchpad, so it's a little messy right now)
 https://docs.google.com/spreadsheets/d/1sm80nzYKKdVQgPSX5PvwCM2HYVOJKis19Hx33IxYNTk/edit#gid=0&vpid=A1
 
+w241 Pilot Data:   
+https://docs.google.com/spreadsheets/d/1Gxu05IU1jQYf-bNddQJIpg0COo6O8P3KrDPt1AUYZr0/edit#gid=0&vpid=A1
+
 w241 Project Data:
 https://docs.google.com/spreadsheets/d/1uavU79KL0CRSXPrNG6BksszsOwiK2Y74zWGkPYxQwkc/edit#gid=0
 
