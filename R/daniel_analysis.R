@@ -66,6 +66,24 @@ summary(glm.nb(rtotal ~ treatment + factor(pairid) + population, data=d))
 summary(lm(rtotal ~ treatment + factor(pairid) + population + factor(city) + factor(day) + author, data=d))
 summary(glm.nb(rtotal ~ treatment + factor(pairid) + population + factor(city) + factor(day) + author, data=d))
 
+# Plot the distribution of residuals for OLS regression
+ols.stdres = rstandard(lm(rtotal ~ treatment + factor(pairid), data=d))
+qqnorm(ols.stdres, 
+       ylab="Standardized Residuals", 
+       xlab="Normal Scores",
+       main=""
+       ) 
+qqline(ols.stdres)
+
+# Because the residuals are not normally distributed and data are positively skewed, let's
+# settle on poisson distribution (neg binomial is getting into territory we don't grok)
+summary(glm(rtotal ~ treatment, data=d, family = "poisson"))
+summary(glm(rtotal ~ treatment + factor(pairid), data=d, family = "poisson"))
+summary(glm(rtotal ~ treatment + factor(pairid) + population, data=d, family = "poisson"))
+summary(glm(rtotal ~ treatment + factor(pairid) + population + factor(city) + factor(day) + author, data=d, family = "poisson"))
+
+
+
 # roffer visualization
 hist(d$roffer)
 hist(log(d$roffer))
@@ -92,3 +110,22 @@ summary(lm(avgoffer ~ treatment, data=d))
 summary(lm(avgoffer ~ treatment + factor(pairid), data=d))
 summary(lm(avgoffer ~ treatment + factor(pairid) + population, data=d))
 summary(lm(avgoffer ~ treatment + factor(pairid) + population + factor(city) + factor(day) + author, data=d))
+
+
+# t-test and power calculations
+library(pwr)
+library(lsr)
+
+t.test(d[treatment==1]$rtotal, d[treatment==0]$rtotal, paired=TRUE)
+cohensD(d[treatment==1]$rtotal, d[treatment==0]$rtotal, method="paired")
+
+# this does the same thing but combines it all into a descriptive output
+pairedSamplesTTest(rtotal ~ treatment, data=d, id="pairid", one.sided = "treatment")
+
+# cohensD above is 0.15. What is this experiment's power to decect that effect size?
+pwr.t.test(n = 50, d = 0.15, sig.level = 0.05, power = NULL, type = "paired")
+# What effect size could the experiment detect with 80% power?
+pwr.t.test(n = 50, d = NULL, sig.level = 0.05, power = 0.8, type = "paired")
+# How many pairs needed to detect a 0.15 effect size with 80% power?
+pwr.t.test(n = NULL, d = 0.15, sig.level = 0.05, power = 0.8, type = "paired")
+
