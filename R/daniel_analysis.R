@@ -5,8 +5,8 @@
 library(data.table)
 library(MASS)
 
-d = fread('~/MIDS/W241/final project/data.csv')
-
+d = fread('/Users/koza/Documents/UCBerkeley/241/w241Project/R/daniel_data.csv')
+head(d)
 # data manipulation
 d[city==1, population := 2.1]
 d[city==2, population := 7]
@@ -49,7 +49,7 @@ randomize <- function(num.control, num.treat){
 }
 distribution.under.sharp.null = replicate(10000, est.ate(d$rtotal, randomize(50,50)))
 p = mean(ate < distribution.under.sharp.null)
-
+p
 # rtotal regression...
 summary(lm(rtotal ~ treatment, data=d))
 summary(lm(rtotal ~ treatment + factor(pairid), data=d)) # <-- very close to randomized inference results
@@ -92,3 +92,15 @@ summary(lm(avgoffer ~ treatment, data=d))
 summary(lm(avgoffer ~ treatment + factor(pairid), data=d))
 summary(lm(avgoffer ~ treatment + factor(pairid) + population, data=d))
 summary(lm(avgoffer ~ treatment + factor(pairid) + population + factor(city) + factor(day) + author, data=d))
+
+# Statistical power: 
+# true treatment effect/standard error of estimated effect
+# Standard error of estimated effect determined by square root of sample size and variation of outcome.
+
+varInOutcome = var(d$rtotal) 
+N = nrow(d)
+SE_hat = sqrt(varInOutcome/N)
+
+trueTreatEffect = lm(rtotal ~ treatment, data=d)$coefficients[2]
+power = SE_hat/trueTreatEffect
+
