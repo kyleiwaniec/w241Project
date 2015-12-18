@@ -6,6 +6,7 @@ output: pdf_document
 ```{r  results="hide", echo=FALSE, message=FALSE, warning=FALSE}
 library(data.table)
 library(MASS)
+library(stargazer)
 
 d = fread('~/MIDS/W241/final project/data.csv')
 
@@ -25,6 +26,7 @@ sem <- function(x) sqrt(var(x) / length(x))
 ```
 
 ```{r results="hide", echo=FALSE, message=FALSE, warning=FALSE}
+# Descriptive Statistics: Randomization
 d[,sum(treatment),by=city]                  # treatment/control split by city (50% for each city by design)
 table(d$city, d$author)                     # author distribution by city (random)
 d[,sum(treatment),by=day]                   # treatment/control split by day (random)
@@ -55,6 +57,8 @@ table(d$day, d$author)                      # author distribution by day (random
 
 
 ```{r echo=FALSE}
+# Descriptive Statistics: Outcomes
+
 # mean response count
 rtotal = d[,.(m = mean(rtotal), se = sem(rtotal)),by=treatment]
 rtotal.m.1 = rtotal[treatment==1]$m
@@ -87,3 +91,62 @@ avg.se.0 = round(avg[treatment==0]$se, 2)
 | Mean Response Count: | `r rtotal.m.1` (`r  rtotal.se.1`) | `r rtotal.m.0` (`r rtotal.se.0`) |
 | Mean Offer Count: | `r roffer.m.1` (`r  roffer.se.1`) | `r roffer.m.0` (`r roffer.se.0`) |
 | Mean Mean Offer: | `r avg.m.1` (`r  avg.se.1`) | `r avg.m.0` (`r avg.se.0`) |
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# rtotal Regression
+mod1.ols = lm(rtotal ~ treatment, data=d)
+mod2.ols = lm(rtotal ~ treatment + factor(pairid), data=d)
+mod3.ols = lm(rtotal ~ treatment + factor(pairid) + population, data=d)
+mod4.ols = lm(rtotal ~ treatment + factor(pairid) + population + factor(city) + factor(day) + author, data=d)
+mod1.pois = glm(rtotal ~ treatment, data=d, family = "poisson")
+mod2.pois = glm(rtotal ~ treatment + factor(pairid), data=d, family = "poisson")
+mod3.pois = glm(rtotal ~ treatment + factor(pairid) + population, data=d, family = "poisson")
+mod4.pois = glm(rtotal ~ treatment + factor(pairid) + population + factor(city) + factor(day) + author, data=d, family = "poisson")
+
+# We're using poisson because the data are 0-heavy,
+# positively skewed count (non-negative) data. Histogram shows this
+hist(d$rtotal, breaks=30)
+
+# qqplot shows the residual distribution from OLS regression (i.e. also illustrates that OLS
+# is inappropriate)
+ols.stdres = rstandard(mod2.ols)
+qqnorm(ols.stdres, 
+       ylab="Standardized Residuals", 
+       xlab="Normal Scores",
+       main=""
+       ) 
+qqline(ols.stdres)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# Both OLS and poisson together. Not sure if this is useful
+#stargazer(mod1.ols, mod2.ols, mod3.ols, mod4.ols, mod1.pois, mod2.pois, mod3.pois, mod4.pois,
+#          omit=c("^factor.*", "^author.*"), 
+#          add.lines = list(
+#            c("Pair Fixed effects?", "No", "Yes", "Yes", "Yes", "No", "Yes", "Yes", "Yes"),
+#            c("Day Fixed effects?", "No", "No", "No", "Yes", "No", "No", "No", "Yes"),
+#            c("Author Fixed effects?", "No", "No", "No", "Yes", "No", "No", "No", "Yes"))
+#         )
+
+# OLS
+stargazer(mod1.ols, mod2.ols, mod3.ols, mod4.ols,
+          omit=c("^factor.*", "^author.*"), 
+          add.lines = list(
+            c("Pair Fixed effects?", "No", "Yes", "Yes", "Yes"),
+            c("Day Fixed effects?", "No", "No", "No", "Yes"),
+            c("Author Fixed effects?", "No", "No", "No", "Yes"))
+         )
+
+# Poisson
+stargazer(mod1.pois, mod2.pois, mod3.pois, mod4.pois,
+          omit=c("^factor.*", "^author.*"), 
+          add.lines = list(
+            c("Pair Fixed effects?", "No", "Yes", "Yes", "Yes"),
+            c("Day Fixed effects?", "No", "No", "No", "Yes"),
+            c("Author Fixed effects?", "No", "No", "No", "Yes"))
+         )
+
+```
+
+TODO: regression on secondary outcomes
