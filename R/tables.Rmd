@@ -1,0 +1,183 @@
+---
+title: "Final Project Tables"
+output: html_document
+---
+
+```{r  results="hide", echo=FALSE, message=FALSE, warning=FALSE}
+library(data.table)
+library(MASS)
+library(stargazer)
+
+d = fread('/Users/koza/Documents/UCBerkeley/241/w241Project/R/daniel_data.csv')
+
+# data manipulation
+d[city==1, population := 2.1]
+d[city==2, population := 7]
+d[city==3, population := 3.25]
+d[city==4, population := 8.4]
+d[city==5, population := 18.55]
+
+d$avgoffer = as.numeric(d$avgoffer)
+
+d$city = factor(d$city)
+
+# standard error of the mean function
+sem <- function(x) sqrt(var(x) / length(x))
+```
+
+```{r results="hide", echo=FALSE, message=FALSE, warning=FALSE}
+# Descriptive Statistics: Randomization
+d[,sum(treatment),by=city]                  # treatment/control split by city (50% for each city by design)
+table(d$city, d$author)                     # author distribution by city (random)
+d[,sum(treatment),by=day]                   # treatment/control split by day (random)
+table(d$day, d$author)                      # author distribution by day (random)
+```
+
+| | City 1 | City 2 | City 3 | City 4 | City 5 |
+| ---: | :---: | :---: | :---: | :---: | :---: |
+| Population (millions): | 2.1 | 7 | 3.25 | 8.4 | 18.55 |
+| Treatment Ads: | 10 | 10 | 10 | 10 | 10 |
+| Control Ads: | 10 | 10 | 10 | 10 | 10 |
+| Author 1 Ads: | 3 | 2 | 3 | 7 | 5 |
+| Author 2 Ads: | 5 | 7 | 3 | 3 | 2 |
+| Author 3 Ads: | 7 | 5 | 2 | 3 | 3 |
+| Author 4 Ads: | 2 | 3 | 7 | 1 | 7 |
+| Author 5 Ads: | 3 | 3 | 5 | 6 | 3 |
+
+| | Day 1 | Day 2 | Day 3 | Day 4 |
+| ---: | :---: | :---: | :---: | :---: |
+| Treatment Ads: | 15 | 11 | 9 | 15 |
+| Control Ads: | 10 | 14 | 16 | 10 |
+| Author 1 Ads: | 5 | 8 | 3 | 4 |
+| Author 2 Ads: | 3 | 4 | 4 | 9 |
+| Author 3 Ads: | 8 | 6 | 2 | 4 |
+| Author 4 Ads: | 6 | 4 | 7 | 3 |
+| Author 5 Ads: | 3 | 3 | 9 | 5 |
+
+
+
+```{r echo=FALSE}
+# Descriptive Statistics: Outcomes
+
+# mean response count
+rtotal = d[,.(m = mean(rtotal), se = sem(rtotal)),by=treatment]
+rtotal.m.1 = rtotal[treatment==1]$m
+rtotal.se.1 = format(rtotal[treatment==1]$se, digits=2)
+rtotal.m.0 = rtotal[treatment==0]$m
+rtotal.se.0 = format(rtotal[treatment==0]$se, digits=2)
+
+# mean offer count
+roffer = d[,.(m = mean(roffer), se = sem(roffer)),by=treatment]
+roffer.m.1 = roffer[treatment==1]$m
+roffer.se.1 = format(roffer[treatment==1]$se, digits=2)
+roffer.m.0 = roffer[treatment==0]$m
+roffer.se.0 = format(roffer[treatment==0]$se, digits=2)
+
+# mean offer amount (this is the average offer amount, not average of the averages...not using it)
+offer.mean.1 = sum(d[treatment==1,avgoffer*roffer], na.rm=T) / sum(d[treatment==1,roffer])
+offer.mean.0 = sum(d[treatment==0,avgoffer*roffer], na.rm=T) / sum(d[treatment==0,roffer])
+
+# here is the average of the averages
+avg = d[!is.na(avgoffer),.(m = mean(avgoffer), se = sem(roffer)),by=treatment]
+avg.m.1 = round(avg[treatment==1]$m, 2)
+avg.se.1 = round(avg[treatment==1]$se, 2)
+avg.m.0 = round(avg[treatment==0]$m, 2)
+avg.se.0 = round(avg[treatment==0]$se, 2)
+
+```
+
+| | Treatment | Control |
+| ---: | :---: | :---: |
+| Mean Response Count: | `r rtotal.m.1` (`r  rtotal.se.1`) | `r rtotal.m.0` (`r rtotal.se.0`) |
+| Mean Offer Count: | `r roffer.m.1` (`r  roffer.se.1`) | `r roffer.m.0` (`r roffer.se.0`) |
+| Mean Mean Offer: | `r avg.m.1` (`r  avg.se.1`) | `r avg.m.0` (`r avg.se.0`) |
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# rtotal Regression
+mod1.ols = lm(rtotal ~ treatment, data=d)
+mod2.ols = lm(rtotal ~ treatment + factor(pairid), data=d)
+mod3.ols = lm(rtotal ~ treatment + factor(pairid) + population, data=d)
+mod4.ols = lm(rtotal ~ treatment + factor(pairid) + population + factor(city) + factor(day) + author, data=d)
+mod1.pois = glm(rtotal ~ treatment, data=d, family = "poisson")
+mod2.pois = glm(rtotal ~ treatment + factor(pairid), data=d, family = "poisson")
+mod3.pois = glm(rtotal ~ treatment + factor(pairid) + population, data=d, family = "poisson")
+mod4.pois = glm(rtotal ~ treatment + factor(pairid) + population + factor(city) + factor(day) + author, data=d, family = "poisson")
+
+# We're using poisson because the data are 0-heavy,
+# positively skewed count (non-negative) data. Histogram shows this
+# hist(d$rtotal, breaks=30)
+
+# the pretty version:
+hist(d$rtotal, col="honeydew4", 
+     border="white", 
+     main=paste("Response Count"), 
+     cex.main=2,
+     font.main=1,
+     xlab="Number of responses", 
+     ylab="Frequency",
+     col.main="gray20",
+     col.lab="gray20",
+     cex.axis=1.5,
+     cex.lab=1.5,
+     lwd=.5,
+     breaks=30, 
+     xlim=c(0,30)
+     )
+#axis(1,col="gray100")
+#axis(2,col="gray100")
+
+
+
+# qqplot shows the residual distribution from OLS regression (i.e. also illustrates that OLS
+# is inappropriate)
+ols.stdres = rstandard(mod2.ols)
+qqnorm(ols.stdres, 
+       ylab="Standardized Residuals", 
+       xlab="Normal Scores",
+       col.main="gray20",
+       col.lab="gray20",
+       col.axis="gray20",
+       lwd=.5,
+       font.main=1,
+       cex.main=2,
+       cex.axis=1.5,
+       cex.lab=1.5,
+       main="Residual distribution"
+       ) 
+qqline(ols.stdres)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# Both OLS and poisson together. Not sure if this is useful
+#stargazer(mod1.ols, mod2.ols, mod3.ols, mod4.ols, mod1.pois, mod2.pois, mod3.pois, mod4.pois,
+#          omit=c("^factor.*", "^author.*"), 
+#          add.lines = list(
+#            c("Pair Fixed effects?", "No", "Yes", "Yes", "Yes", "No", "Yes", "Yes", "Yes"),
+#            c("Day Fixed effects?", "No", "No", "No", "Yes", "No", "No", "No", "Yes"),
+#            c("Author Fixed effects?", "No", "No", "No", "Yes", "No", "No", "No", "Yes"))
+#         )
+
+# OLS
+stargazer(mod1.ols, mod2.ols, mod3.ols, mod4.ols,
+          omit=c("^factor.*", "^author.*"), 
+          add.lines = list(
+            c("Pair Fixed effects?", "No", "Yes", "Yes", "Yes"),
+            c("Day Fixed effects?", "No", "No", "No", "Yes"),
+            c("Author Fixed effects?", "No", "No", "No", "Yes")),
+          type='html'
+         )
+
+# Poisson
+stargazer(mod1.pois, mod2.pois, mod3.pois, mod4.pois,
+          omit=c("^factor.*", "^author.*"), 
+          add.lines = list(
+            c("Pair Fixed effects?", "No", "Yes", "Yes", "Yes"),
+            c("Day Fixed effects?", "No", "No", "No", "Yes"),
+            c("Author Fixed effects?", "No", "No", "No", "Yes")),
+          type='html'
+         )
+
+```
+
+TODO: regression on secondary outcomes
