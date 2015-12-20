@@ -8,7 +8,7 @@ https://docs.google.com/document/d/1J1urqERHVVEP59EpJYDaJf-1J8eG0yoy5EHPpd4Bke4/
 zipcode finder:
 http://maps.huge.info/zip.htm
 
-Tableau map:   
+Craigslist locations map:   
 https://public.tableau.com/profile/publish/map_106/Dashboard1#!/publish-confirm
 
 200LargestUSCities
@@ -18,7 +18,9 @@ All craigslist locations (using this as a scratchpad, so it's a little messy rig
 https://docs.google.com/spreadsheets/d/1sm80nzYKKdVQgPSX5PvwCM2HYVOJKis19Hx33IxYNTk/edit#gid=0&vpid=A1
 
 w241 Pilot Data:   
-https://docs.google.com/spreadsheets/d/1Gxu05IU1jQYf-bNddQJIpg0COo6O8P3KrDPt1AUYZr0/edit#gid=0&vpid=A1
+https://docs.google.com/spreadsheets/d/1Gxu05IU1jQYf-bNddQJIpg0COo6O8P3KrDPt1AUYZr0/edit#gid=0&vpid=A1   
+Pilot 1 Outcomes graphs:   
+https://public.tableau.com/profile/kyle4807#!/vizhome/iPadPilot/iPadPilot
 
 w241 Project Data:
 https://docs.google.com/spreadsheets/d/1uavU79KL0CRSXPrNG6BksszsOwiK2Y74zWGkPYxQwkc/edit#gid=0
