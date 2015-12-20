@@ -161,3 +161,10 @@ pwr.t.test(n = 50, d = NULL, sig.level = 0.05, power = 0.8, type = "paired")
 # How many pairs needed to detect a 0.15 effect size with 80% power?
 pwr.t.test(n = NULL, d = 0.15, sig.level = 0.05, power = 0.8, type = "paired")
 
+
+# Variance of rtotal (there's got to be a better way to calculate this)
+pair.means = d[, mean(rtotal), by=pairid]$V1
+pair.means = c(rbind(pair.means, pair.means))
+var(d$rtotal - pair.means)
+# ...is actually pretty close to the mean (so poisson is appropriate)
+mean(d$rtotal)
