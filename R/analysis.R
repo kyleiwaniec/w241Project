@@ -32,6 +32,8 @@ mean(d$roffer)                              # mean responses with offer
 nrow(d[rtotal > 0])                         # number of ads that received responses
 sum(d[, .(pairsum = sum(rtotal) > 0), by=pairid]$pairsum)
                                             # number of pairs that received responses
+sum(d[, .(pairsum = sum(roffer) > 0), by=pairid]$pairsum)
+                                            # number of pairs that received offers
 
 
 
@@ -45,12 +47,31 @@ est.ate <- function(outcome, treat) {
   mean(outcome[treat==1]) - mean(outcome[treat==0])
 } 
 ate = est.ate(d$rtotal, d$treatment)
+# Made 2 mistakes first time we did RI. Turns out they cancelled each other out and we got about the right answer...
+# Mistake 1. the first randomize function we used produces a random sequence of 1s and 0s with 50 of each, but that's not what
+# we want. We want to "block" on the matched features, which means assigning one member of
+# each pair to treatment and the other to control.
+#randomize <- function(num.control, num.treat){
+#  sample(c(rep(0,num.control),rep(1,num.treat)))
+#}
+# this randomize function does what we want
 randomize <- function(num.control, num.treat){
-  sample(c(rep(0,num.control),rep(1,num.treat)))
+  first = sample(c(rep(0, num.control / 2),rep(1, num.treat / 2)))
+  second = 1 - first
+  c(rbind(first, second))
 }
 distribution.under.sharp.null = replicate(10000, est.ate(d$rtotal, randomize(50,50)))
-p = mean(ate < distribution.under.sharp.null)
+# Mistake 2. We took the 1-tailed p-value, which is not consistent with our regression analysis
+#p = mean(ate < distribution.under.sharp.null)
+# Here's the 2-tailed version
+p = mean(abs(ate) < abs(distribution.under.sharp.null))
 p
+
+plot(density(distribution.under.sharp.null))# the first 
+abline(v=ate)
+
+# 
+
 # rtotal regression...
 summary(lm(rtotal ~ treatment, data=d))
 summary(lm(rtotal ~ treatment + factor(pairid), data=d)) # <-- very close to randomized inference results
