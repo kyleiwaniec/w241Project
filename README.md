@@ -1,7 +1,12 @@
 # w241Project
 Craigslist Experiment
 
-Progress report:
+Final report (PDF):
+https://github.com/kyleiwaniec/w241Project/blob/master/w241-Project-report.docx.pdf
+
+-----
+
+Interim progress report:
 https://docs.google.com/document/d/1J1urqERHVVEP59EpJYDaJf-1J8eG0yoy5EHPpd4Bke4/edit#
 
 ##Resources##
